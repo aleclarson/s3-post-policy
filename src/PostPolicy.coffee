@@ -73,17 +73,24 @@ type.defineMethods
 
     return (options) ->
       assertTypes options, optionTypes
+
       options.date ?= new Date
-      options.expires ?= 30 # minutes
-      options.expires = new Date (6e4 * options.expires) + options.date.getTime()
       date = options.date.toISOString().replace /[:\-]|\.\d{3}/g, ""
+
+      options.expires ?= 30 # minutes
+      expires = new Date (6e4 * options.expires) + options.date.getTime()
       expiration = expires.toISOString()
+
       conditions = @_createConditions()
       conditions.push {"x-amz-date": date}
-      conditions.push {"x-amz-credential": "#{options.accessKeyId}/#{date.substr 0, 8}/#{options.region}/s3/aws4_request"}
+
+      credential = "#{options.accessKeyId}/#{date.substr 0, 8}/#{options.region}/s3/aws4_request"
+      conditions.push {"x-amz-credential": credential}
+
       policy = JSON.stringify {expiration, conditions}
       policy = (new Buffer policy).toString "base64"
+
       signature = aws4_sign options.secretAccessKey, options.date, @region, "s3", policy
-      return {signature, policy, expiration, conditions}
+      return {policy, signature, credential, date}
 
 module.exports = type.build()

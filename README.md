@@ -1,5 +1,5 @@
 
-# s3-post-policy v1.1.0 ![stable](https://img.shields.io/badge/stability-stable-4EBA0F.svg?style=flat)
+# s3-post-policy v1.2.0 ![stable](https://img.shields.io/badge/stability-stable-4EBA0F.svg?style=flat)
 
 ```coffee
 PostPolicy = require "s3-post-policy"
@@ -19,10 +19,12 @@ data = policy.sign
   accessKeyId: "AKIAIOSFODNN7EXAMPLE"                         # the S3 access key ID
   secretAccessKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" # the S3 secret access key
 
-data.policy     # The policy base64-encoded
-data.signature  # The policy signature
-data.expiration # The policy expiration
-data.conditions # The policy conditions
+# data = {
+#   policy (String): the base64 encoded policy
+#   signature (String): the value of x-amz-signature
+#   credential (String): the value of x-amz-credential
+#   date (String): the value of x-amz-date
+# }
 ```
 
 ### install
