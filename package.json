@@ -1,6 +1,6 @@
 {
   "name": "s3-post-policy",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "S3 browser-based POST policy (using AWS Signature Version 4)",
   "main": "js/PostPolicy",
   "dependencies": {

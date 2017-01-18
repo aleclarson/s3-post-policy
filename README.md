@@ -1,5 +1,5 @@
 
-# s3-post-policy v1.0.0 ![stable](https://img.shields.io/badge/stability-stable-4EBA0F.svg?style=flat)
+# s3-post-policy v1.1.0 ![stable](https://img.shields.io/badge/stability-stable-4EBA0F.svg?style=flat)
 
 ```coffee
 PostPolicy = require "s3-post-policy"
@@ -13,11 +13,16 @@ policy = PostPolicy
   contentType: "image/png"             # (optional) the required content-type. Defaults to none
   contentLength: [1, 1e6]              # (optional) the content-length range or max value. Defaults to no limit
 
-policy = policy.sign
+data = policy.sign
   date: new Date                       # (optional) the date used to sign the policy
-  expires: 5                           # (optional) the number of minutes before the signature expires. Defaults to 30 minutes
-  publicKey: "AKIAIOSFODNN7EXAMPLE"                      # the S3 access key ID
-  privateKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" # the S3 secret access key
+  expires: 5                           # (optional) the minutes until the signature expires. Defaults to 30 minutes
+  accessKeyId: "AKIAIOSFODNN7EXAMPLE"                         # the S3 access key ID
+  secretAccessKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" # the S3 secret access key
+
+data.policy     # The policy base64-encoded
+data.signature  # The policy signature
+data.expiration # The policy expiration
+data.conditions # The policy conditions
 ```
 
 ### install
