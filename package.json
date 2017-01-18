@@ -1,0 +1,20 @@
+{
+  "name": "s3-post-policy",
+  "version": "1.0.0",
+  "description": "S3 browser-based POST policy (using AWS Signature Version 4)",
+  "main": "js/PostPolicy",
+  "dependencies": {
+    "OneOf": "aleclarson/OneOf#1.0.1",
+    "Type": "aleclarson/Type#2.1.0",
+    "assertTypes": "aleclarson/assertTypes#2.0.1",
+    "aws4-signature": "^1.0.1",
+    "isType": "aleclarson/isType#1.0.1"
+  },
+  "plugins": [
+    "lotus-coffee"
+  ],
+  "scripts": {
+    "build": "coffee-build -v 1.11.x -b -o js src",
+    "postinstall": "npm run build"
+  }
+}
