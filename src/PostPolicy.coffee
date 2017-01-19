@@ -37,9 +37,13 @@ type.defineMethods
     conditions.push {@acl}
 
     # Starts-with matching
-    conditions.push ["starts-with", "$key", @key or ""]
     conditions.push ["starts-with", "$Content-Type", @contentType or ""]
     conditions.push ["starts-with", "$Content-Length", ""]
+
+    # File name restriction (supports starts-with matching for partial keys)
+    if @key and (not @key.endsWith "/") and (not @key.endsWith "-")
+    then conditions.push {@key}
+    else conditions.push ["starts-with", "$key", @key or ""]
 
     # Limiting file size
     if @contentLength
