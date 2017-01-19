@@ -45,7 +45,7 @@ type.defineMethods
     then conditions.push {@key}
     else conditions.push ["starts-with", "$key", @key or ""]
 
-    # Limiting file size
+    # File size restriction
     if @contentLength
       if isType @contentLength, Array
         conditions.push ["content-length-range", @contentLength[0], @contentLength[1]]
@@ -69,7 +69,7 @@ type.defineMethods
 
     optionTypes =
       date: Date.Maybe
-      expires: Number.Maybe
+      expires: Number.Maybe # (in minutes)
       accessKeyId: String
       secretAccessKey: String
 
@@ -79,7 +79,7 @@ type.defineMethods
       options.date ?= new Date
       date = options.date.toISOString().replace /[:\-]|\.\d{3}/g, ""
 
-      options.expires ?= 30 # minutes
+      options.expires ?= 30
       expires = new Date (6e4 * options.expires) + options.date.getTime()
       expiration = expires.toISOString()
 
