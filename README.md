@@ -1,5 +1,5 @@
 
-# s3-post-policy v1.2.0 ![stable](https://img.shields.io/badge/stability-stable-4EBA0F.svg?style=flat)
+# s3-post-policy v1.3.0 ![stable](https://img.shields.io/badge/stability-stable-4EBA0F.svg?style=flat)
 
 ```coffee
 PostPolicy = require "s3-post-policy"

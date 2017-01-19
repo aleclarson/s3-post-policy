@@ -20,10 +20,8 @@ type.defineOptions
   contentType: String
   contentLength: Number.or Array
 
-type.defineValues (options) ->
-  options.date = new Date
-  options.expires = new Date options.expires
-  return options
+# Expose all options as values.
+type.defineValues (options) -> options
 
 type.defineMethods
 
@@ -39,11 +37,15 @@ type.defineMethods
     conditions.push {@acl}
 
     # Starts-with matching
-    conditions.push ["starts-with", "$key", @key or ""]
     conditions.push ["starts-with", "$Content-Type", @contentType or ""]
     conditions.push ["starts-with", "$Content-Length", ""]
 
-    # Limiting file size
+    # File name restriction (supports starts-with matching for partial keys)
+    if @key and (not @key.endsWith "/") and (not @key.endsWith "-")
+    then conditions.push {@key}
+    else conditions.push ["starts-with", "$key", @key or ""]
+
+    # File size restriction
     if @contentLength
       if isType @contentLength, Array
         conditions.push ["content-length-range", @contentLength[0], @contentLength[1]]
@@ -66,10 +68,10 @@ type.defineMethods
   sign: do ->
 
     optionTypes =
-      date: Date.Maybe
-      expires: Number.Maybe
       accessKeyId: String
       secretAccessKey: String
+      date: Date.Maybe
+      expires: Number.Maybe # (in seconds)
 
     return (options) ->
       assertTypes options, optionTypes
@@ -77,20 +79,24 @@ type.defineMethods
       options.date ?= new Date
       date = options.date.toISOString().replace /[:\-]|\.\d{3}/g, ""
 
-      options.expires ?= 30 # minutes
-      expires = new Date (6e4 * options.expires) + options.date.getTime()
-      expiration = expires.toISOString()
+      options.expires ?= 1800 # (30 minutes)
+      expires = new Date options.date.getTime() + options.expires * 1000
 
       conditions = @_createConditions()
       conditions.push {"x-amz-date": date}
 
-      credential = "#{options.accessKeyId}/#{date.substr 0, 8}/#{options.region}/s3/aws4_request"
+      credential = "#{options.accessKeyId}/#{date.substr 0, 8}/#{@region}/s3/aws4_request"
       conditions.push {"x-amz-credential": credential}
 
-      policy = JSON.stringify {expiration, conditions}
+      policy = JSON.stringify {expiration: expires.toISOString(), conditions}
       policy = (new Buffer policy).toString "base64"
 
-      signature = aws4_sign options.secretAccessKey, options.date, @region, "s3", policy
-      return {policy, signature, credential, date}
+      return {
+        policy
+        signature: aws4_sign options.secretAccessKey, options.date, @region, "s3", policy
+        credential
+        expires: options.expires
+        date
+      }
 
 module.exports = type.build()
