@@ -20,10 +20,8 @@ type.defineOptions
   contentType: String
   contentLength: Number.or Array
 
-type.defineValues (options) ->
-  options.date = new Date
-  options.expires = new Date options.expires
-  return options
+# Expose all options as values.
+type.defineValues (options) -> options
 
 type.defineMethods
 
