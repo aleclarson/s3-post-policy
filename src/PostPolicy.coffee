@@ -86,7 +86,7 @@ type.defineMethods
       conditions = @_createConditions()
       conditions.push {"x-amz-date": date}
 
-      credential = "#{options.accessKeyId}/#{date.substr 0, 8}/#{options.region}/s3/aws4_request"
+      credential = "#{options.accessKeyId}/#{date.substr 0, 8}/#{@region}/s3/aws4_request"
       conditions.push {"x-amz-credential": credential}
 
       policy = JSON.stringify {expiration, conditions}
