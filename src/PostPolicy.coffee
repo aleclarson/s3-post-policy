@@ -93,6 +93,6 @@ type.defineMethods
       policy = (new Buffer policy).toString "base64"
 
       signature = aws4_sign options.secretAccessKey, options.date, @region, "s3", policy
-      return {policy, signature, credential, date}
+      return {policy, signature, credential, date, expires}
 
 module.exports = type.build()
